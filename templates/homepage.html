@@ -1,0 +1,14 @@
+{% extends "base.html" %} 
+
+{% block title %} Homepage {% endblock %}
+
+{% block content %} 
+    
+<h1> {{satisfaction_title}} </h1>
+<h2>{{satisfaction_ins}}</h2>
+<form action="/questions/1">
+    <button id ="button" >questions</button>
+</form>
+
+
+{% endblock %}
