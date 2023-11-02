@@ -1,4 +1,4 @@
-from flask import Flask , render_template , request , redirect ,flash
+from flask import Flask , render_template , request , redirect ,flash , session
 from flask_debugtoolbar import DebugToolbarExtension
 import surveys
 
@@ -19,9 +19,12 @@ def start():
 @app.route("/answers", methods = ["POST"])
 def answers():
     ans = request.form["answer"]
+    responses = session["responses"]
     responses.append(ans)
-    if len(responses) <= len(satisfaction_questions):
-        num = len(responses)
+    session["responses"] = responses
+    print(session["responses"])
+    if len(session["responses"]) <= len(satisfaction_questions):
+        num = len(session["responses"])
     else:
         num = "done"
     return redirect(f"/questions/{num}")
@@ -29,7 +32,7 @@ def answers():
 @app.route("/questions/<num>")
 def question(num):
     question_num = int(num)-1
-    next_num = int(len(responses))
+    next_num = int(len(session["responses"]))
     current_num = int(num)
     if current_num != next_num or  question_num > len(satisfaction_questions):
         flash("invalid question !")
@@ -42,3 +45,10 @@ def question(num):
 @app.route("/questions/done")
 def thanks():
     return render_template("done.html")
+
+
+@app.route("/set_response", methods= ["POST"])
+def setting_response():
+    session["responses"]=[]
+    return redirect("/questions/1")
+
